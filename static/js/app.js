@@ -14,6 +14,7 @@ const emptyState = document.getElementById('empty-state');
 const retryBtn = document.getElementById('retry-btn');
 const refreshBtn = document.getElementById('refresh-btn');
 const refreshIcon = document.getElementById('refresh-icon');
+const exportCsvBtn = document.getElementById('export-csv-btn');
 
 const searchInput = document.getElementById('search-input');
 const clearSearchBtn = document.getElementById('clear-search-btn');
@@ -56,6 +57,7 @@ function setupEventListeners() {
     // Refresh & Retry
     refreshBtn.addEventListener('click', () => fetchReleases(true));
     retryBtn.addEventListener('click', () => fetchReleases(true));
+    exportCsvBtn.addEventListener('click', () => exportToCSV());
 
     // Search Input
     searchInput.addEventListener('input', (e) => {
@@ -211,10 +213,26 @@ function renderUpdatesList() {
         li.innerHTML = `
             <div class="update-item-header">
                 <span class="update-item-date">${note.date}</span>
-                <span class="badge ${badgeClass}">${note.type}</span>
+                <div class="update-item-actions">
+                    <span class="badge ${badgeClass}">${note.type}</span>
+                    <button class="card-copy-btn" title="Copy release note text" data-id="${note.id}">
+                        <i data-lucide="copy"></i>
+                    </button>
+                </div>
             </div>
             <p class="update-item-excerpt">${excerpt}</p>
         `;
+        
+        // Bind card copy button click specifically
+        const cardCopyBtn = li.querySelector('.card-copy-btn');
+        cardCopyBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop click from selecting the card
+            navigator.clipboard.writeText(note.text).then(() => {
+                showToast('Copied release note to clipboard!', 'success');
+            }).catch(err => {
+                showToast('Failed to copy text', 'error');
+            });
+        });
         
         li.addEventListener('click', () => {
             selectUpdate(note);
@@ -226,6 +244,7 @@ function renderUpdatesList() {
         
         updatesList.appendChild(li);
     });
+    lucide.createIcons();
 }
 
 // Selected Update Display details
@@ -376,4 +395,42 @@ function showToast(message, type = 'info') {
             toast.remove();
         });
     }, 3500);
+}
+
+// Export updates list to CSV format
+function exportToCSV() {
+    if (!filteredNotes || filteredNotes.length === 0) {
+        showToast('No data to export', 'error');
+        return;
+    }
+    
+    // CSV headers
+    const headers = ['Date', 'Type', 'Content Text', 'Documentation Link'];
+    
+    // Construct rows with double-quotes handling
+    const rows = filteredNotes.map(note => {
+        const date = `"${note.date.replace(/"/g, '""')}"`;
+        const type = `"${note.type.replace(/"/g, '""')}"`;
+        const text = `"${note.text.replace(/"/g, '""')}"`;
+        const link = `"${note.link.replace(/"/g, '""')}"`;
+        return [date, type, text, link].join(',');
+    });
+    
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    
+    // Create download link element and trigger it
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const downloadLink = document.createElement('a');
+    
+    const timestamp = new Date().toISOString().slice(0, 10);
+    downloadLink.setAttribute('href', url);
+    downloadLink.setAttribute('download', `bigquery_releases_${timestamp}.csv`);
+    downloadLink.style.visibility = 'hidden';
+    
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    
+    showToast(`Exported ${filteredNotes.length} updates to CSV!`, 'success');
 }

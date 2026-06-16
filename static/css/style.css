@@ -1178,3 +1178,44 @@ body {
         border-bottom: 1px solid var(--border-light);
     }
 }
+
+/* Utility Features Styles */
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.update-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-copy-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: var(--transition-smooth);
+    opacity: 0;
+}
+
+.update-item:hover .card-copy-btn {
+    opacity: 1;
+}
+
+.card-copy-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.card-copy-btn i {
+    width: 14px;
+    height: 14px;
+}
+
