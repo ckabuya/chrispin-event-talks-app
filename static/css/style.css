@@ -1219,3 +1219,65 @@ body {
     height: 14px;
 }
 
+/* Light Theme Variables & Specific Readability Overrides */
+body.light-theme {
+    --bg-app: radial-gradient(circle at 50% 50%, #f8fafc 0%, #cbd5e1 100%);
+    --bg-panel: rgba(248, 250, 252, 0.75);
+    --bg-card: rgba(255, 255, 255, 0.6);
+    --bg-card-hover: rgba(255, 255, 255, 0.95);
+    --bg-input: rgba(255, 255, 255, 0.9);
+    --border-glow: rgba(99, 102, 241, 0.1);
+    --border-light: rgba(15, 23, 42, 0.08);
+    --border-focus: rgba(99, 102, 241, 0.6);
+    
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+}
+
+body.light-theme .logo-text h1 {
+    background: linear-gradient(to right, #0f172a, #4f46e5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .update-item.active {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+body.light-theme .detail-content {
+    color: #1e293b;
+}
+
+body.light-theme .detail-content code {
+    background: rgba(0, 0, 0, 0.05);
+    color: #db2777;
+}
+
+body.light-theme .detail-content pre {
+    background: rgba(241, 245, 249, 0.9);
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .detail-content pre code {
+    color: #1e293b;
+}
+
+body.light-theme .composer-panel {
+    background: rgba(241, 245, 249, 0.4);
+}
+
+body.light-theme .btn-icon-round {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-theme .btn-icon-round:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+body.light-theme .toast {
+    background: rgba(255, 255, 255, 0.95);
+    color: #0f172a;
+}
+
+

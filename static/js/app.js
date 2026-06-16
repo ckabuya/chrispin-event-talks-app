@@ -15,6 +15,8 @@ const retryBtn = document.getElementById('retry-btn');
 const refreshBtn = document.getElementById('refresh-btn');
 const refreshIcon = document.getElementById('refresh-icon');
 const exportCsvBtn = document.getElementById('export-csv-btn');
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
+const themeIcon = document.getElementById('theme-icon');
 
 const searchInput = document.getElementById('search-input');
 const clearSearchBtn = document.getElementById('clear-search-btn');
@@ -48,6 +50,13 @@ const toastContainer = document.getElementById('toast-container');
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
+    // Load theme on startup
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.setAttribute('data-lucide', 'moon');
+        lucide.createIcons();
+    }
     fetchReleases();
     setupEventListeners();
 });
@@ -58,6 +67,7 @@ function setupEventListeners() {
     refreshBtn.addEventListener('click', () => fetchReleases(true));
     retryBtn.addEventListener('click', () => fetchReleases(true));
     exportCsvBtn.addEventListener('click', () => exportToCSV());
+    themeToggleBtn.addEventListener('click', () => toggleTheme());
 
     // Search Input
     searchInput.addEventListener('input', (e) => {
@@ -433,4 +443,16 @@ function exportToCSV() {
     document.body.removeChild(downloadLink);
     
     showToast(`Exported ${filteredNotes.length} updates to CSV!`, 'success');
+}
+
+// Toggle between light and dark themes
+function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-theme');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    
+    // Update Lucide icon
+    themeIcon.setAttribute('data-lucide', isLight ? 'moon' : 'sun');
+    lucide.createIcons();
+    
+    showToast(`Switched to ${isLight ? 'Light' : 'Dark'} Mode!`, 'success');
 }
