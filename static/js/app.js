@@ -150,6 +150,13 @@ async function fetchReleases(forceRefresh = false) {
             applyFilters();
             updateStats();
             
+            // Auto-select first note on initial desktop load to avoid blank right-hand panel
+            if (filteredNotes.length > 0 && !selectedNote && window.innerWidth > 768) {
+                selectUpdate(filteredNotes[0]);
+                const firstItem = updatesList.querySelector('.update-item');
+                if (firstItem) firstItem.classList.add('active');
+            }
+            
             if (forceRefresh) {
                 showToast('Release notes updated successfully!', 'success');
             }
@@ -270,6 +277,13 @@ function selectUpdate(note) {
     detailTitle.textContent = `Google BigQuery - ${note.type} Update`;
     detailLink.href = note.link;
     detailContent.innerHTML = note.content;
+    
+    // Force all embedded links in the release note content to open in a new tab
+    const inlineLinks = detailContent.querySelectorAll('a');
+    inlineLinks.forEach(link => {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+    });
     
     // Badge Setup
     detailBadge.className = `badge ${getBadgeClass(note.type)}`;
